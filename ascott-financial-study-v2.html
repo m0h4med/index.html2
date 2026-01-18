@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASCOTT - Financial Feasibility Study v2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+      font-family: 'Inter', sans-serif;
+      color: #e8eaf6;
+    }
+    
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 28px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .glass-card:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    
+    .input-field {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: #00d4ff;
+      font-size: 15px;
+      font-weight: 600;
+      width: 100%;
+      transition: all 0.3s ease;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .input-field:focus {
+      outline: none;
+      border-color: #00d4ff;
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+      background: rgba(0, 212, 255, 0.08);
+    }
+    
+    .input-field.text-left {
+      text-align: left;
+    }
+    
+    .stat-value {
+      font-size: 32px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #00d4ff, #00ff88);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 28px;
+      background: linear-gradient(135deg, #00d4ff, #00ff88);
+      border-radius: 2px;
+    }
+    
+    .employee-row {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      display: grid;
+      grid-template-columns: 40px 1.5fr 1fr 0.8fr 0.8fr 1fr 1fr;
+      gap: 12px;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+    
+    .employee-row:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .employee-row.inactive {
+      opacity: 0.4;
+    }
+    
+    .toggle-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .toggle-btn.active {
+      background: linear-gradient(135deg, #00d4ff, #00ff88);
+      color: #0a0f1c;
+    }
+    
+    .toggle-btn.inactive {
+      background: rgba(255, 255, 255, 0.1);
+      color: #666;
+    }
+    
+    .project-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    
+    .summary-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+    }
+    
+    .summary-card.highlight {
+      background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 255, 136, 0.1));
+      border-color: rgba(0, 212, 255, 0.3);
+    }
+    
+    .small-input {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+    }
+    
+    .header-grid {
+      display: grid;
+      grid-template-columns: 40px 1.5fr 1fr 0.8fr 0.8fr 1fr 1fr;
+      gap: 12px;
+      padding: 12px 20px;
+      background: rgba(0, 212, 255, 0.05);
+      border-radius: 12px;
+      margin-bottom: 16px;
+      font-weight: 600;
+      font-size: 12px;
+      color: #8892b0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .profit-box {
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+    }
+    
+    .profit-box.positive {
+      background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 255, 136, 0.15));
+      border: 2px solid rgba(0, 255, 136, 0.4);
+    }
+    
+    .profit-box.negative {
+      background: linear-gradient(135deg, rgba(255, 82, 82, 0.15), rgba(255, 138, 128, 0.15));
+      border: 2px solid rgba(255, 82, 82, 0.4);
+    }
+
+    @media (max-width: 1200px) {
+      .employee-row, .header-grid {
+        grid-template-columns: 40px 1fr 1fr 1fr;
+        gap: 10px;
+      }
+      .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .employee-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .header-grid {
+        display: none;
+      }
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .tab-btn {
+      padding: 12px 24px;
+      border: none;
+      background: rgba(255, 255, 255, 0.05);
+      color: #8892b0;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    .tab-btn.active {
+      background: linear-gradient(135deg, #00d4ff, #00ff88);
+      color: #0a0f1c;
+    }
+    
+    .tab-btn:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .distributed-badge {
+      background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 152, 0, 0.2));
+      border: 1px solid rgba(255, 193, 7, 0.4);
+      color: #ffc107;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+
+    .fixed-badge {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #8892b0;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  
+  <script type="text/babel">
+    const { useState, useMemo } = React;
+
+    const AscottFinancialStudy = () => {
+      // Customer Info
+      const [customerName, setCustomerName] = useState('ASCOTT');
+      const [projectType, setProjectType] = useState('Housekeeping Services');
+      
+      // View Mode
+      const [viewMode, setViewMode] = useState('monthly');
+      
+      // Employees Data
+      const [employees, setEmployees] = useState([
+        { id: 1, position: 'Housekeeping Attendant', nationality: 'Indian', vacancies: 12, gender: 'Male', salary: 1500, active: true },
+        { id: 2, position: 'Lifeguard', nationality: 'Sri Lankan', vacancies: 2, gender: 'Male', salary: 2000, active: true },
+        { id: 3, position: '', nationality: '', vacancies: 0, gender: 'Male', salary: 0, active: false },
+        { id: 4, position: '', nationality: '', vacancies: 0, gender: 'Male', salary: 0, active: false },
+        { id: 5, position: '', nationality: '', vacancies: 0, gender: 'Male', salary: 0, active: false },
+        { id: 6, position: '', nationality: '', vacancies: 0, gender: 'Male', salary: 0, active: false },
+        { id: 7, position: '', nationality: '', vacancies: 0, gender: 'Male', salary: 0, active: false },
+        { id: 8, position: '', nationality: '', vacancies: 0, gender: 'Male', salary: 0, active: false },
+      ]);
+      
+      // Revenue per employee per month
+      const [revenuePerEmployee, setRevenuePerEmployee] = useState(2250);
+      
+      // Distributable Costs (Accommodation & Transportation) - TOTAL for all projects
+      const [totalAccommodationMonthly, setTotalAccommodationMonthly] = useState(0);
+      const [totalTransportationMonthly, setTotalTransportationMonthly] = useState(0);
+      const [accommodationPrepTotal, setAccommodationPrepTotal] = useState(0);
+      
+      // Fixed Costs (not distributed)
+      const [otherCosts, setOtherCosts] = useState(0);
+      
+      // Projects Distribution
+      const [projects, setProjects] = useState([
+        { id: 1, name: 'ASCOTT', workers: 14, active: true },
+        { id: 2, name: '', workers: 0, active: false },
+        { id: 3, name: '', workers: 0, active: false },
+      ]);
+
+      const updateEmployee = (id, field, value) => {
+        setEmployees(prev => prev.map(e => 
+          e.id === id ? { ...e, [field]: ['vacancies', 'salary'].includes(field) ? Number(value) : value } : e
+        ));
+      };
+
+      const toggleEmployee = (id) => {
+        setEmployees(prev => prev.map(e => 
+          e.id === id ? { ...e, active: !e.active } : e
+        ));
+      };
+
+      const updateProject = (id, field, value) => {
+        setProjects(prev => prev.map(p => 
+          p.id === id ? { ...p, [field]: field === 'workers' ? Number(value) : value } : p
+        ));
+      };
+
+      const toggleProject = (id) => {
+        setProjects(prev => prev.map(p => 
+          p.id === id ? { ...p, active: !p.active } : p
+        ));
+      };
+
+      const calculations = useMemo(() => {
+        const activeEmployees = employees.filter(e => e.active && e.vacancies > 0);
+        const totalEmployees = activeEmployees.reduce((sum, e) => sum + e.vacancies, 0);
+        
+        // Monthly Salaries (Fixed - not distributed)
+        const monthlySalaries = activeEmployees.reduce((sum, e) => sum + (e.salary * e.vacancies), 0);
+        const yearlySalaries = monthlySalaries * 12;
+        
+        // Projects Distribution
+        const activeProjects = projects.filter(p => p.active && p.workers > 0);
+        const totalProjectWorkers = activeProjects.reduce((sum, p) => sum + p.workers, 0);
+        
+        // Find ASCOTT project (first active project or the one named ASCOTT)
+        const ascottProject = activeProjects.find(p => p.name.toUpperCase() === 'ASCOTT') || activeProjects[0];
+        const ascottWorkers = ascottProject ? ascottProject.workers : totalEmployees;
+        const ascottPercentage = totalProjectWorkers > 0 ? (ascottWorkers / totalProjectWorkers) * 100 : 100;
+        
+        // Distributed costs for ASCOTT only
+        const ascottAccommodationMonthly = (ascottPercentage / 100) * totalAccommodationMonthly;
+        const ascottTransportationMonthly = (ascottPercentage / 100) * totalTransportationMonthly;
+        const ascottAccommodationPrepMonthly = (ascottPercentage / 100) * (accommodationPrepTotal / 12);
+        
+        const ascottAccommodationYearly = ascottAccommodationMonthly * 12;
+        const ascottTransportationYearly = ascottTransportationMonthly * 12;
+        const ascottAccommodationPrepYearly = (ascottPercentage / 100) * accommodationPrepTotal;
+        
+        // Total distributed costs for ASCOTT
+        const monthlyDistributedCosts = ascottAccommodationMonthly + ascottTransportationMonthly + ascottAccommodationPrepMonthly;
+        const yearlyDistributedCosts = ascottAccommodationYearly + ascottTransportationYearly + ascottAccommodationPrepYearly;
+        
+        // Fixed costs (not distributed)
+        const monthlyFixedCosts = monthlySalaries + otherCosts;
+        const yearlyFixedCosts = yearlySalaries + (otherCosts * 12);
+        
+        // Total Costs for ASCOTT
+        const monthlyTotalCosts = monthlyFixedCosts + monthlyDistributedCosts;
+        const yearlyTotalCosts = yearlyFixedCosts + yearlyDistributedCosts;
+        
+        // Revenue
+        const monthlyRevenue = revenuePerEmployee * totalEmployees;
+        const yearlyRevenue = monthlyRevenue * 12;
+        
+        // Profit
+        const monthlyProfit = monthlyRevenue - monthlyTotalCosts;
+        const yearlyProfit = yearlyRevenue - yearlyTotalCosts;
+        
+        const profitMargin = monthlyRevenue > 0 ? (monthlyProfit / monthlyRevenue) * 100 : 0;
+        
+        // Projects breakdown for display
+        const projectsBreakdown = activeProjects.map(project => {
+          const percentage = totalProjectWorkers > 0 ? (project.workers / totalProjectWorkers) * 100 : 0;
+          const allocatedAccommodation = (percentage / 100) * totalAccommodationMonthly;
+          const allocatedTransportation = (percentage / 100) * totalTransportationMonthly;
+          const allocatedAccommodationPrep = (percentage / 100) * (accommodationPrepTotal / 12);
+          const totalAllocatedMonthly = allocatedAccommodation + allocatedTransportation + allocatedAccommodationPrep;
+          const totalAllocatedYearly = totalAllocatedMonthly * 12;
+          
+          return {
+            ...project,
+            percentage,
+            allocatedAccommodation,
+            allocatedTransportation,
+            allocatedAccommodationPrep,
+            totalAllocatedMonthly,
+            totalAllocatedYearly
+          };
+        });
+        
+        return {
+          activeEmployees,
+          totalEmployees,
+          monthlySalaries,
+          yearlySalaries,
+          ascottPercentage,
+          ascottAccommodationMonthly,
+          ascottTransportationMonthly,
+          ascottAccommodationPrepMonthly,
+          ascottAccommodationYearly,
+          ascottTransportationYearly,
+          ascottAccommodationPrepYearly,
+          monthlyDistributedCosts,
+          yearlyDistributedCosts,
+          monthlyFixedCosts,
+          yearlyFixedCosts,
+          monthlyTotalCosts,
+          yearlyTotalCosts,
+          monthlyRevenue,
+          yearlyRevenue,
+          monthlyProfit,
+          yearlyProfit,
+          profitMargin,
+          projectsBreakdown,
+          totalProjectWorkers
+        };
+      }, [employees, revenuePerEmployee, totalAccommodationMonthly, totalTransportationMonthly, 
+          accommodationPrepTotal, otherCosts, projects]);
+
+      const formatNumber = (num) => {
+        return new Intl.NumberFormat('en-US').format(Math.round(num));
+      };
+
+      return (
+        <div style={{ padding: '24px', maxWidth: '1600px', margin: '0 auto' }}>
+          {/* Header */}
+          <div style={{
+            textAlign: 'center',
+            marginBottom: '40px',
+            padding: '40px',
+            background: 'linear-gradient(135deg, rgba(0, 212, 255, 0.08), rgba(0, 255, 136, 0.05))',
+            borderRadius: '24px',
+            border: '1px solid rgba(255, 255, 255, 0.1)'
+          }}>
+            <div style={{
+              fontSize: '12px',
+              color: '#00d4ff',
+              letterSpacing: '4px',
+              marginBottom: '12px',
+              fontWeight: '600',
+              textTransform: 'uppercase'
+            }}>Financial Feasibility Study v2</div>
+            <input
+              type="text"
+              value={customerName}
+              onChange={(e) => setCustomerName(e.target.value)}
+              style={{
+                fontSize: '48px',
+                fontWeight: '800',
+                background: 'transparent',
+                border: 'none',
+                color: '#fff',
+                textAlign: 'center',
+                fontFamily: 'Poppins, sans-serif',
+                width: '100%'
+              }}
+            />
+            <input
+              type="text"
+              value={projectType}
+              onChange={(e) => setProjectType(e.target.value)}
+              style={{
+                fontSize: '16px',
+                background: 'transparent',
+                border: 'none',
+                color: '#8892b0',
+                textAlign: 'center',
+                width: '100%',
+                marginTop: '8px'
+              }}
+            />
+            
+            {/* View Toggle */}
+            <div style={{ marginTop: '24px', display: 'flex', gap: '12px', justifyContent: 'center' }}>
+              <button 
+                className={`tab-btn ${viewMode === 'monthly' ? 'active' : ''}`}
+                onClick={() => setViewMode('monthly')}
+              >
+                Monthly View
+              </button>
+              <button 
+                className={`tab-btn ${viewMode === 'yearly' ? 'active' : ''}`}
+                onClick={() => setViewMode('yearly')}
+              >
+                Yearly View
+              </button>
+            </div>
+          </div>
+
+          {/* Revenue Settings */}
+          <div className="glass-card" style={{ marginBottom: '24px' }}>
+            <div className="section-title">💰 Revenue Settings</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px' }}>
+              <div>
+                <label style={{ display: 'block', marginBottom: '10px', color: '#8892b0', fontSize: '14px' }}>
+                  Revenue Per Employee / Month (SAR)
+                </label>
+                <input
+                  type="number"
+                  className="input-field"
+                  value={revenuePerEmployee}
+                  onChange={(e) => setRevenuePerEmployee(Number(e.target.value))}
+                />
+              </div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'rgba(0, 255, 136, 0.08)',
+                borderRadius: '16px',
+                padding: '20px'
+              }}>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ color: '#8892b0', fontSize: '14px', marginBottom: '8px' }}>
+                    {viewMode === 'monthly' ? 'Total Monthly Revenue' : 'Total Yearly Revenue'}
+                  </div>
+                  <div style={{ fontSize: '28px', fontWeight: '800', color: '#00ff88' }}>
+                    {formatNumber(viewMode === 'monthly' ? calculations.monthlyRevenue : calculations.yearlyRevenue)} SAR
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Employees Section */}
+          <div className="glass-card" style={{ marginBottom: '24px' }}>
+            <div className="section-title">👥 Manpower Requirements</div>
+            
+            <div className="header-grid">
+              <div></div>
+              <div>Position</div>
+              <div>Nationality</div>
+              <div style={{ textAlign: 'center' }}>Vacancies</div>
+              <div style={{ textAlign: 'center' }}>Gender</div>
+              <div style={{ textAlign: 'center' }}>Basic Salary</div>
+              <div style={{ textAlign: 'center' }}>Total Monthly</div>
+            </div>
+
+            {employees.map((emp) => (
+              <div key={emp.id} className={`employee-row ${emp.active ? '' : 'inactive'}`}>
+                <button
+                  className={`toggle-btn ${emp.active ? 'active' : 'inactive'}`}
+                  onClick={() => toggleEmployee(emp.id)}
+                >
+                  {emp.active ? '✓' : '+'}
+                </button>
+                
+                <input
+                  type="text"
+                  className="input-field small-input text-left"
+                  placeholder="Position..."
+                  value={emp.position}
+                  onChange={(e) => updateEmployee(emp.id, 'position', e.target.value)}
+                  disabled={!emp.active}
+                />
+                
+                <input
+                  type="text"
+                  className="input-field small-input text-left"
+                  placeholder="Nationality..."
+                  value={emp.nationality}
+                  onChange={(e) => updateEmployee(emp.id, 'nationality', e.target.value)}
+                  disabled={!emp.active}
+                />
+                
+                <input
+                  type="number"
+                  className="input-field small-input"
+                  value={emp.vacancies}
+                  onChange={(e) => updateEmployee(emp.id, 'vacancies', e.target.value)}
+                  disabled={!emp.active}
+                />
+                
+                <select
+                  className="input-field small-input"
+                  value={emp.gender}
+                  onChange={(e) => updateEmployee(emp.id, 'gender', e.target.value)}
+                  disabled={!emp.active}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+                
+                <input
+                  type="number"
+                  className="input-field small-input"
+                  value={emp.salary}
+                  onChange={(e) => updateEmployee(emp.id, 'salary', e.target.value)}
+                  disabled={!emp.active}
+                />
+                
+                <div style={{ 
+                  textAlign: 'center', 
+                  fontWeight: '700',
+                  fontSize: '16px',
+                  color: emp.active ? '#00d4ff' : '#666'
+                }}>
+                  {emp.active ? formatNumber(emp.salary * emp.vacancies) : '-'}
+                </div>
+              </div>
+            ))}
+            
+            <div style={{
+              marginTop: '20px',
+              padding: '16px 24px',
+              background: 'rgba(0, 212, 255, 0.08)',
+              borderRadius: '12px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '16px'
+            }}>
+              <span style={{ color: '#8892b0' }}>
+                Total Employees: <strong style={{ color: '#00d4ff' }}>{calculations.totalEmployees}</strong>
+              </span>
+              <span style={{ color: '#8892b0' }}>
+                Monthly Salaries: <strong style={{ color: '#00d4ff' }}>{formatNumber(calculations.monthlySalaries)} SAR</strong>
+                <span className="fixed-badge">Fixed Cost</span>
+              </span>
+            </div>
+          </div>
+
+          {/* Distributable Costs */}
+          <div className="glass-card" style={{ marginBottom: '24px' }}>
+            <div className="section-title">
+              🔄 Distributable Costs 
+              <span className="distributed-badge">Distributed by Workers</span>
+            </div>
+            <p style={{ color: '#8892b0', marginBottom: '20px', fontSize: '14px' }}>
+              These costs will be distributed across projects based on worker allocation percentage
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px' }}>
+              <div>
+                <label style={{ display: 'block', marginBottom: '10px', color: '#8892b0', fontSize: '14px' }}>
+                  Total Accommodation / Month (SAR)
+                </label>
+                <input
+                  type="number"
+                  className="input-field"
+                  value={totalAccommodationMonthly}
+                  onChange={(e) => setTotalAccommodationMonthly(Number(e.target.value))}
+                  placeholder="Enter total for all projects..."
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', marginBottom: '10px', color: '#8892b0', fontSize: '14px' }}>
+                  Total Transportation / Month (SAR)
+                </label>
+                <input
+                  type="number"
+                  className="input-field"
+                  value={totalTransportationMonthly}
+                  onChange={(e) => setTotalTransportationMonthly(Number(e.target.value))}
+                  placeholder="Enter total for all projects..."
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', marginBottom: '10px', color: '#8892b0', fontSize: '14px' }}>
+                  Accommodation Preparation (Total/Year)
+                </label>
+                <input
+                  type="number"
+                  className="input-field"
+                  value={accommodationPrepTotal}
+                  onChange={(e) => setAccommodationPrepTotal(Number(e.target.value))}
+                  placeholder="Enter yearly total..."
+                />
+              </div>
+            </div>
+            
+            <div style={{
+              marginTop: '20px',
+              padding: '16px 24px',
+              background: 'rgba(255, 193, 7, 0.1)',
+              border: '1px solid rgba(255, 193, 7, 0.3)',
+              borderRadius: '12px'
+            }}>
+              <div style={{ color: '#ffc107', fontWeight: '600', marginBottom: '8px' }}>
+                Total Distributable Costs:
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+                <span style={{ color: '#8892b0' }}>
+                  Monthly: <strong style={{ color: '#fff' }}>{formatNumber(totalAccommodationMonthly + totalTransportationMonthly + (accommodationPrepTotal/12))} SAR</strong>
+                </span>
+                <span style={{ color: '#8892b0' }}>
+                  Yearly: <strong style={{ color: '#fff' }}>{formatNumber((totalAccommodationMonthly + totalTransportationMonthly) * 12 + accommodationPrepTotal)} SAR</strong>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Fixed Costs */}
+          <div className="glass-card" style={{ marginBottom: '24px' }}>
+            <div className="section-title">
+              📊 Fixed Costs
+              <span className="fixed-badge">Not Distributed</span>
+            </div>
+            <p style={{ color: '#8892b0', marginBottom: '20px', fontSize: '14px' }}>
+              These costs are fixed and fully charged to this project
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px' }}>
+              <div>
+                <label style={{ display: 'block', marginBottom: '10px', color: '#8892b0', fontSize: '14px' }}>
+                  Salaries (Auto-calculated)
+                </label>
+                <div style={{
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  borderRadius: '12px',
+                  padding: '12px 16px',
+                  color: '#8892b0',
+                  fontSize: '15px',
+                  fontWeight: '600',
+                  textAlign: 'center'
+                }}>
+                  {formatNumber(calculations.monthlySalaries)} SAR / month
+                </div>
+              </div>
+              <div>
+                <label style={{ display: 'block', marginBottom: '10px', color: '#8892b0', fontSize: '14px' }}>
+                  Other Monthly Costs (SAR)
+                </label>
+                <input
+                  type="number"
+                  className="input-field"
+                  value={otherCosts}
+                  onChange={(e) => setOtherCosts(Number(e.target.value))}
+                  placeholder="Enter amount..."
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Projects Distribution */}
+          <div className="glass-card" style={{ marginBottom: '24px' }}>
+            <div className="section-title">🏢 Projects Cost Distribution</div>
+            <p style={{ color: '#8892b0', marginBottom: '20px', fontSize: '14px' }}>
+              Only <strong style={{ color: '#ffc107' }}>Accommodation & Transportation</strong> costs are distributed based on worker numbers
+            </p>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
+              {projects.map((project) => {
+                const breakdown = calculations.projectsBreakdown.find(p => p.id === project.id);
+                return (
+                  <div key={project.id} className="project-card" style={{ opacity: project.active ? 1 : 0.4 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+                      <button
+                        className={`toggle-btn ${project.active ? 'active' : 'inactive'}`}
+                        onClick={() => toggleProject(project.id)}
+                        style={{ width: '32px', height: '32px', fontSize: '14px' }}
+                      >
+                        {project.active ? '✓' : '+'}
+                      </button>
+                      <input
+                        type="text"
+                        className="input-field text-left"
+                        placeholder="Project Name..."
+                        value={project.name}
+                        onChange={(e) => updateProject(project.id, 'name', e.target.value)}
+                        disabled={!project.active}
+                        style={{ flex: 1 }}
+                      />
+                    </div>
+                    
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', color: '#8892b0', fontSize: '12px' }}>
+                          Workers
+                        </label>
+                        <input
+                          type="number"
+                          className="input-field small-input"
+                          value={project.workers}
+                          onChange={(e) => updateProject(project.id, 'workers', e.target.value)}
+                          disabled={!project.active}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', color: '#8892b0', fontSize: '12px' }}>
+                          Cost Share %
+                        </label>
+                        <div style={{
+                          background: 'rgba(255, 193, 7, 0.15)',
+                          border: '1px solid rgba(255, 193, 7, 0.3)',
+                          borderRadius: '12px',
+                          padding: '12px',
+                          textAlign: 'center',
+                          color: '#ffc107',
+                          fontWeight: '700'
+                        }}>
+                          {breakdown ? breakdown.percentage.toFixed(1) : 0}%
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {project.active && breakdown && breakdown.percentage > 0 && (
+                      <div style={{
+                        marginTop: '16px',
+                        padding: '12px',
+                        background: 'rgba(255, 255, 255, 0.03)',
+                        borderRadius: '10px'
+                      }}>
+                        <div style={{ fontSize: '12px', color: '#ffc107', marginBottom: '10px', fontWeight: '600' }}>
+                          Allocated Costs (Distributed):
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '13px' }}>
+                          <span style={{ color: '#8892b0' }}>Accommodation:</span>
+                          <span style={{ color: '#fff' }}>{formatNumber(breakdown.allocatedAccommodation)} SAR/mo</span>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '13px' }}>
+                          <span style={{ color: '#8892b0' }}>Transportation:</span>
+                          <span style={{ color: '#fff' }}>{formatNumber(breakdown.allocatedTransportation)} SAR/mo</span>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', fontSize: '13px' }}>
+                          <span style={{ color: '#8892b0' }}>Accom. Prep:</span>
+                          <span style={{ color: '#fff' }}>{formatNumber(breakdown.allocatedAccommodationPrep)} SAR/mo</span>
+                        </div>
+                        <div style={{ 
+                          borderTop: '1px solid rgba(255, 255, 255, 0.1)', 
+                          paddingTop: '10px',
+                          display: 'flex', 
+                          justifyContent: 'space-between',
+                          fontWeight: '600'
+                        }}>
+                          <span style={{ color: '#ffc107' }}>Total Monthly:</span>
+                          <span style={{ color: '#ffc107' }}>{formatNumber(breakdown.totalAllocatedMonthly)} SAR</span>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px' }}>
+                          <span style={{ color: '#8892b0', fontSize: '13px' }}>Total Yearly:</span>
+                          <span style={{ color: '#fff', fontSize: '13px' }}>{formatNumber(breakdown.totalAllocatedYearly)} SAR</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Financial Summary */}
+          <div className="glass-card" style={{ marginBottom: '24px' }}>
+            <div className="section-title">📈 Financial Summary for {customerName} ({viewMode === 'monthly' ? 'Monthly' : 'Yearly'})</div>
+            
+            <div className="summary-grid" style={{ marginBottom: '24px' }}>
+              <div className="summary-card">
+                <div style={{ color: '#8892b0', fontSize: '14px', marginBottom: '12px' }}>Total Employees</div>
+                <div className="stat-value">{calculations.totalEmployees}</div>
+              </div>
+              <div className="summary-card">
+                <div style={{ color: '#8892b0', fontSize: '14px', marginBottom: '12px' }}>Cost Share</div>
+                <div className="stat-value" style={{ fontSize: '28px' }}>{calculations.ascottPercentage.toFixed(1)}%</div>
+              </div>
+              <div className="summary-card">
+                <div style={{ color: '#8892b0', fontSize: '14px', marginBottom: '12px' }}>Total Costs</div>
+                <div style={{ fontSize: '24px', fontWeight: '800', color: '#ff5252' }}>
+                  {formatNumber(viewMode === 'monthly' ? calculations.monthlyTotalCosts : calculations.yearlyTotalCosts)}
+                </div>
+                <div style={{ color: '#8892b0', fontSize: '12px', marginTop: '4px' }}>SAR</div>
+              </div>
+              <div className="summary-card highlight">
+                <div style={{ color: '#8892b0', fontSize: '14px', marginBottom: '12px' }}>Profit Margin</div>
+                <div className="stat-value" style={{
+                  background: calculations.profitMargin >= 0 
+                    ? 'linear-gradient(135deg, #00ff88, #00d4ff)' 
+                    : 'linear-gradient(135deg, #ff5252, #ff8a80)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}>
+                  {calculations.profitMargin.toFixed(1)}%
+                </div>
+              </div>
+            </div>
+
+            {/* Detailed Breakdown */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
+              {/* Costs Breakdown */}
+              <div style={{
+                background: 'rgba(255, 82, 82, 0.05)',
+                border: '1px solid rgba(255, 82, 82, 0.2)',
+                borderRadius: '16px',
+                padding: '24px'
+              }}>
+                <h3 style={{ color: '#ff5252', marginBottom: '20px', fontSize: '18px' }}>📉 Costs Breakdown</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  
+                  {/* Fixed Costs */}
+                  <div style={{ fontSize: '12px', color: '#8892b0', fontWeight: '600', marginBottom: '4px' }}>
+                    FIXED COSTS:
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: '#8892b0' }}>Salaries</span>
+                    <span style={{ fontWeight: '600' }}>
+                      {formatNumber(viewMode === 'monthly' ? calculations.monthlySalaries : calculations.yearlySalaries)} SAR
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: '#8892b0' }}>Other Costs</span>
+                    <span style={{ fontWeight: '600' }}>
+                      {formatNumber(viewMode === 'monthly' ? otherCosts : otherCosts * 12)} SAR
+                    </span>
+                  </div>
+                  
+                  {/* Distributed Costs */}
+                  <div style={{ 
+                    fontSize: '12px', 
+                    color: '#ffc107', 
+                    fontWeight: '600', 
+                    marginTop: '12px',
+                    marginBottom: '4px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    DISTRIBUTED COSTS ({calculations.ascottPercentage.toFixed(1)}%):
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: '#8892b0' }}>Accommodation</span>
+                    <span style={{ fontWeight: '600' }}>
+                      {formatNumber(viewMode === 'monthly' ? calculations.ascottAccommodationMonthly : calculations.ascottAccommodationYearly)} SAR
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: '#8892b0' }}>Transportation</span>
+                    <span style={{ fontWeight: '600' }}>
+                      {formatNumber(viewMode === 'monthly' ? calculations.ascottTransportationMonthly : calculations.ascottTransportationYearly)} SAR
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: '#8892b0' }}>Accommodation Prep</span>
+                    <span style={{ fontWeight: '600' }}>
+                      {formatNumber(viewMode === 'monthly' ? calculations.ascottAccommodationPrepMonthly : calculations.ascottAccommodationPrepYearly)} SAR
+                    </span>
+                  </div>
+                  
+                  <div style={{ 
+                    borderTop: '1px solid rgba(255, 255, 255, 0.1)', 
+                    paddingTop: '12px', 
+                    marginTop: '8px',
+                    display: 'flex', 
+                    justifyContent: 'space-between' 
+                  }}>
+                    <span style={{ fontWeight: '700', color: '#ff5252' }}>Total Costs</span>
+                    <span style={{ fontWeight: '700', color: '#ff5252', fontSize: '18px' }}>
+                      {formatNumber(viewMode === 'monthly' ? calculations.monthlyTotalCosts : calculations.yearlyTotalCosts)} SAR
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Revenue Breakdown */}
+              <div style={{
+                background: 'rgba(0, 255, 136, 0.05)',
+                border: '1px solid rgba(0, 255, 136, 0.2)',
+                borderRadius: '16px',
+                padding: '24px'
+              }}>
+                <h3 style={{ color: '#00ff88', marginBottom: '20px', fontSize: '18px' }}>📈 Revenue Breakdown</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: '#8892b0' }}>Employees</span>
+                    <span style={{ fontWeight: '600' }}>{calculations.totalEmployees}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: '#8892b0' }}>Rate / Employee / Month</span>
+                    <span style={{ fontWeight: '600' }}>{formatNumber(revenuePerEmployee)} SAR</span>
+                  </div>
+                  <div style={{ 
+                    borderTop: '1px solid rgba(255, 255, 255, 0.1)', 
+                    paddingTop: '12px', 
+                    marginTop: '8px',
+                    display: 'flex', 
+                    justifyContent: 'space-between' 
+                  }}>
+                    <span style={{ fontWeight: '700', color: '#00ff88' }}>Total Revenue</span>
+                    <span style={{ fontWeight: '700', color: '#00ff88', fontSize: '18px' }}>
+                      {formatNumber(viewMode === 'monthly' ? calculations.monthlyRevenue : calculations.yearlyRevenue)} SAR
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Net Profit */}
+              <div className={`profit-box ${calculations.monthlyProfit >= 0 ? 'positive' : 'negative'}`}>
+                <h3 style={{ 
+                  color: calculations.monthlyProfit >= 0 ? '#00d4ff' : '#ff5252', 
+                  marginBottom: '16px', 
+                  fontSize: '18px' 
+                }}>
+                  {calculations.monthlyProfit >= 0 ? '🎯 Net Profit' : '⚠️ Net Loss'}
+                </h3>
+                <div style={{
+                  fontSize: '42px',
+                  fontWeight: '800',
+                  color: calculations.monthlyProfit >= 0 ? '#00ff88' : '#ff5252',
+                  marginBottom: '8px'
+                }}>
+                  {formatNumber(Math.abs(viewMode === 'monthly' ? calculations.monthlyProfit : calculations.yearlyProfit))}
+                </div>
+                <div style={{ color: '#8892b0' }}>SAR / {viewMode === 'monthly' ? 'Month' : 'Year'}</div>
+                <div style={{
+                  marginTop: '16px',
+                  padding: '12px',
+                  background: 'rgba(0, 0, 0, 0.2)',
+                  borderRadius: '10px'
+                }}>
+                  <span style={{ color: '#8892b0' }}>Profit Margin: </span>
+                  <span style={{ 
+                    fontWeight: '700', 
+                    color: calculations.profitMargin >= 0 ? '#00ff88' : '#ff5252' 
+                  }}>
+                    {calculations.profitMargin.toFixed(2)}%
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div style={{
+            textAlign: 'center',
+            padding: '24px',
+            color: '#8892b0',
+            fontSize: '14px'
+          }}>
+            <div style={{ marginBottom: '8px' }}>
+              {customerName} • {projectType} • Financial Feasibility Study
+            </div>
+            <div style={{ opacity: 0.6 }}>
+              All figures are estimates and subject to change • Only Accommodation & Transportation costs are distributed
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<AscottFinancialStudy />);
+  </script>
+</body>
+</html>
